@@ -38,7 +38,7 @@ function handleImageClick(evt) {
   openModal(popup);
 }
 
-// открытия профиля 
+// открытия профиля
 
 const popupEditButton = document.querySelector(".profile__edit-button");
 
@@ -69,9 +69,9 @@ export function handleCloseButton(evt) {
 
   closeModal(popupToClose);
 
-  popupToClose.removeEventListener("click", handelCloseButton);
-  document.removeEventListener("keydown", handelEscButton);
-  popupToClose.removeEventListener("click", handelOverlayClick);
+  popupToClose.removeEventListener("click", handleCloseButton);
+  document.removeEventListener("keydown", handleAddButton);
+  popupToClose.removeEventListener("click", handleOverlayClick);
 }
 
 // закрытие popup на кнопку
@@ -82,9 +82,9 @@ export function handleEscButton(evt) {
   if (evt.key === "Escape") {
     closeModal(popupToClose);
 
-    popupToClose.removeEventListener("click", handelCloseButton);
-    document.removeEventListener("keydown", handelEscButton);
-    popupToClose.removeEventListener("click", handelOverlayClick);
+    popupToClose.removeEventListener("click", handleCloseButton);
+    document.removeEventListener("keydown", handleAddButton);
+    popupToClose.removeEventListener("click", handleOverlayClick);
   }
 }
 
@@ -96,9 +96,9 @@ export function handleOverlayClick(evt) {
   if (evt.target === evt.currentTarget) {
     closeModal(popupToClose);
 
-    popupToClose.removeEventListener("click", handelCloseButton);
-    document.removeEventListener("keydown", handelEscButton);
-    popupToClose.removeEventListener("click", handelOverlayClick);
+    popupToClose.removeEventListener("click", handleCloseButton);
+    document.removeEventListener("keydown", handleAddButton);
+    popupToClose.removeEventListener("click", handleOverlayClick);
   }
 }
 
