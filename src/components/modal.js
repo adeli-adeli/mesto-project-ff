@@ -1,6 +1,6 @@
 // Находим форму в DOM
 
-import { handleCloseButton, popupAll } from "..";
+
 
 // функция открытия popup
 
@@ -13,23 +13,19 @@ export function openModal(modalObj) {
 
 // функция закрытия popup
 
-export function closeModal() {
-  popupAll.forEach((popup) => {
-    if (popup.classList.contains("popup_is-opened")) {
-      popup.classList.remove("popup_is-opened");
+export function closeModal(modalObj) {
+  modalObj.classList.remove("popup_is-opened");
 
-      popup.removeEventListener("click", handleCloseButton);
-      popup.removeEventListener("click", handleOverlayClick);
-    }
-  });
   document.removeEventListener("keydown", handleEscButton);
+  modalObj.removeEventListener("click", handleOverlayClick);
 }
 
 // закрытие popup на кнопку
 
 export function handleEscButton(evt) {
   if (evt.key === "Escape") {
-    closeModal();
+    const popupToClose = document.querySelector(".popup_is-opened");
+    closeModal(popupToClose);
   }
 }
 
@@ -37,6 +33,8 @@ export function handleEscButton(evt) {
 
 export function handleOverlayClick(evt) {
   if (evt.target === evt.currentTarget) {
-    closeModal();
+    const popupToClose = document.querySelector(".popup_is-opened");
+
+    closeModal(popupToClose);
   }
 }

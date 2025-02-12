@@ -79,13 +79,17 @@ popupAddButton.addEventListener("click", handleAddButton);
 // закрытие popup на клик
 
 export function handleCloseButton(evt) {
-  closeModal();
+  const popupToClose = document.querySelector(".popup_is-opened");
+
+  closeModal(popupToClose);
 }
 
 // функция редоктирования профиля
 
-function handleFormSubmit(evt) {
+function handleFormProfileEditing(evt) {
   evt.preventDefault();
+
+  const popupToClose = document.querySelector(".popup_is-opened");
 
   const name = nameInput.value;
   const job = jobInput.value;
@@ -95,15 +99,16 @@ function handleFormSubmit(evt) {
 
   evt.target.reset();
 
-  closeModal();
+  closeModal(popupToClose);
 }
 
-formElement.addEventListener("submit", handleFormSubmit);
+formElement.addEventListener("submit", handleFormProfileEditing);
 
 // функция добавления новой карты
 
 function addNewCard(evt) {
   evt.preventDefault();
+  const popupToClose = document.querySelector(".popup_is-opened");
 
   const cardNew = {
     name: placeNameInput.value,
@@ -116,7 +121,7 @@ function addNewCard(evt) {
 
   evt.target.reset();
 
-  closeModal();
+  closeModal(popupToClose);
 }
 
 addElement.addEventListener("submit", addNewCard);
