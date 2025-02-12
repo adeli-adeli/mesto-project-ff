@@ -1,7 +1,6 @@
 // @todo: Функция создания карточки
 import { cardTemplate } from "..";
 
-
 export function createCard(element, deleteCard, likeCard, imageClick) {
   const cardElement = cardTemplate.cloneNode(true).querySelector(".card");
 
@@ -14,7 +13,9 @@ export function createCard(element, deleteCard, likeCard, imageClick) {
   imageCard.alt = element.name;
   titleCard.textContent = element.name;
 
-  deleteButton.addEventListener("click", deleteCard);
+  deleteButton.addEventListener("click", () => {
+    deleteCard(cardElement);
+  });
   likeButton.addEventListener("click", likeCard);
   imageCard.addEventListener("click", imageClick);
 
@@ -23,9 +24,8 @@ export function createCard(element, deleteCard, likeCard, imageClick) {
 
 // @todo: Функция удаления карточки
 
-export function handleDeleteCard(evt) {
-  const cardElement = evt.target.closest(".card");
-  cardElement.remove();
+export function handleDeleteCard(card) {
+  card.remove();
 }
 
 // Функция кнопки лайка
@@ -35,7 +35,3 @@ export function handleLikeCard(evt) {
     evt.target.classList.toggle("card__like-button_is-active");
   }
 }
-
-
-
-

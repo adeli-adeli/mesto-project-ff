@@ -15,9 +15,30 @@ export const cardTemplate = document.querySelector("#card-template").content;
 
 const container = document.querySelector(".places__list");
 
+export const popupAll = document.querySelectorAll(".popup");
+
+const modalCloseButtonCollection = document.querySelectorAll(".popup__close");
+
 const popupTypeImage = document.querySelector(".popup_type_image");
 const popupImage = popupTypeImage.querySelector(".popup__image");
 const popupCaption = popupTypeImage.querySelector(".popup__caption");
+
+const popupEditButton = document.querySelector(".profile__edit-button");
+const popupTypeEdit = document.querySelector(".popup_type_edit");
+
+const popupAddButton = document.querySelector(".profile__add-button");
+const popupTypeNewCard = document.querySelector(".popup_type_new-card");
+
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+
+const formElement = document.forms["edit-profile"];
+const nameInput = formElement.elements.name;
+const jobInput = formElement.elements.description;
+
+const addElement = document.forms["new-place"];
+const placeNameInput = addElement.elements["place-name"];
+const linkInput = addElement.elements.link;
 
 // @todo: Вывести карточки на страницу
 
@@ -41,9 +62,6 @@ function handleImageClick(evt) {
 
 // открытия профиля
 
-const popupEditButton = document.querySelector(".profile__edit-button");
-const popupTypeEdit = document.querySelector(".popup_type_edit");
-
 function handleEditButton(evt) {
   openModal(popupTypeEdit);
 }
@@ -51,9 +69,6 @@ function handleEditButton(evt) {
 popupEditButton.addEventListener("click", handleEditButton);
 
 // открытия добавления карточки на +
-
-const popupAddButton = document.querySelector(".profile__add-button");
-const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 
 function handleAddButton(evt) {
   openModal(popupTypeNewCard);
@@ -64,41 +79,52 @@ popupAddButton.addEventListener("click", handleAddButton);
 // закрытие popup на клик
 
 export function handleCloseButton(evt) {
-  const popupToClose = evt.target.closest(".popup");
-
-  closeModal(popupToClose);
-
-  popupToClose.removeEventListener("click", handleCloseButton);
-  document.removeEventListener("keydown", handleAddButton);
-  popupToClose.removeEventListener("click", handleOverlayClick);
+  closeModal();
 }
 
-// закрытие popup на кнопку
+// функция редоктирования профиля
 
-export function handleEscButton(evt) {
-  if (evt.key === "Escape") {
-    const popupToClose = document.querySelector(".popup_is-opened");
+function handleFormSubmit(evt) {
+  evt.preventDefault();
 
-    closeModal(popupToClose);
+  const name = nameInput.value;
+  const job = jobInput.value;
 
-    popupToClose.removeEventListener("click", handleCloseButton);
-    document.removeEventListener("keydown", handleAddButton);
-    popupToClose.removeEventListener("click", handleOverlayClick);
-  }
+  profileTitle.textContent = name;
+  profileDescription.textContent = job;
+
+  evt.target.reset();
+
+  closeModal();
 }
 
-// закрытие popup на оверлей
+formElement.addEventListener("submit", handleFormSubmit);
 
-export function handleOverlayClick(evt) {
-  const popupToClose = evt.target.closest(".popup");
+// функция добавления новой карты
 
-  if (evt.target === evt.currentTarget) {
-    closeModal(popupToClose);
+function addNewCard(evt) {
+  evt.preventDefault();
 
-    popupToClose.removeEventListener("click", handleCloseButton);
-    document.removeEventListener("keydown", handleAddButton);
-    popupToClose.removeEventListener("click", handleOverlayClick);
-  }
+  const cardNew = {
+    name: placeNameInput.value,
+    link: linkInput.value,
+  };
+
+  container.prepend(
+    createCard(cardNew, handleDeleteCard, handleLikeCard, handleImageClick)
+  );
+
+  evt.target.reset();
+
+  closeModal();
 }
+
+addElement.addEventListener("submit", addNewCard);
+
+// находим колекцию циклом, и вешаем слушатель на каждую
+
+modalCloseButtonCollection.forEach((closeButton) => {
+  closeButton.addEventListener("click", handleCloseButton);
+});
 
 conclusionCard(initialCards);
