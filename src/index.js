@@ -6,6 +6,7 @@ import {
   handleLikeCard,
 } from "./components/card";
 import { closeModal, openModal } from "./components/modal";
+import { clearValidation, enableValidation } from "./components/validation";
 
 // @todo: Темплейт карточки
 
@@ -63,6 +64,9 @@ function handleImageClick(evt) {
 // открытия профиля
 
 function handleEditButton(evt) {
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+
   openModal(popupTypeEdit);
 }
 
@@ -132,4 +136,8 @@ modalCloseButtonCollection.forEach((closeButton) => {
   closeButton.addEventListener("click", handleCloseButton);
 });
 
+clearValidation(formElement)
+clearValidation(addElement)
+
+enableValidation();
 conclusionCard(initialCards);
