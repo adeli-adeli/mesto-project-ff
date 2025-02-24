@@ -1,12 +1,17 @@
 import "./pages/index.css";
-import { initialCards } from "./scripts/cards";
 import {
   createCard,
   handleDeleteCard,
   handleLikeCard,
-} from "./components/card";
-import { closeModal, openModal } from "./components/modal";
-import { clearValidation, enableValidation } from "./components/validation";
+} from "./components/card.js";
+import { closeModal, openModal } from "./components/modal.js";
+import { clearValidation, enableValidation } from "./components/validation.js";
+import {
+  getUserInfo,
+  getInitialCard,
+  postNewCard,
+  patchEditProfile,
+} from "./components/api.js";
 
 // @todo: Темплейт карточки
 
@@ -32,6 +37,7 @@ const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const profileImage = document.querySelector(".profile__image");
 
 const formElement = document.forms["edit-profile"];
 const nameInput = formElement.elements.name;
@@ -41,15 +47,30 @@ const addElement = document.forms["new-place"];
 const placeNameInput = addElement.elements["place-name"];
 const linkInput = addElement.elements.link;
 
+const editAvatar = document.forms["edit-avatar"];
+const avatarInput = formElement.elements.link;
+
 // @todo: Вывести карточки на страницу
 
-function conclusionCard(cardList) {
-  cardList.forEach((card) => {
+Promise.all([getUserInfo(), getInitialCard()]).then(([user, card]) => {
+  card.forEach((card) => {
     container.append(
-      createCard(card, handleDeleteCard, handleLikeCard, handleImageClick)
+      createCard(
+        card,
+        handleDeleteCard,
+        handleLikeCard,
+        handleImageClick,
+        user._id
+      )
     );
   });
-}
+
+
+  profileTitle.textContent = user.name;
+  profileDescription.textContent = user.about;
+  profileImage.src = user.avatar;
+
+});
 
 // открытие popup с картинкой
 
@@ -95,18 +116,53 @@ function handleFormProfileEditing(evt) {
 
   const popupToClose = document.querySelector(".popup_is-opened");
 
-  const name = nameInput.value;
-  const job = jobInput.value;
+  const editProfile = {
+    name: nameInput.value,
+    about: jobInput.value,
+  };
 
-  profileTitle.textContent = name;
-  profileDescription.textContent = job;
+  patchEditProfile(editProfile)
+    .then((edit) => {
+      profileTitle.textContent = edit.name;
+      profileDescription.textContent = edit.about;
 
-  evt.target.reset();
-
-  closeModal(popupToClose);
+      evt.target.reset();
+      clearValidation(formElement);
+    })
+    .catch((err) => {
+      console.log("Ошибка. Запрос не выполнен: ", err);
+    })
+    .finally(() => {
+      closeModal(popupToClose);
+    });
 }
 
 formElement.addEventListener("submit", handleFormProfileEditing);
+
+function handleFormProfileEditingAvatar() {
+  // evt.preventDefault();
+
+  // const popupToClose = document.querySelector(".popup_is-opened");
+
+  // const editAvatar = {
+  //   avatar: avatarInput.value,
+  // };
+
+  // patchEditProfileAvatar(editAvatar)
+  //   .then((avatar) => {
+  //     profileTitle.textContent = edit.name;
+  //     profileDescription.textContent = edit.about;
+
+  //     evt.target.reset();
+  //     clearValidation(formElement);
+  //   })
+  //   .catch((err) => {
+  //     console.log("Ошибка. Запрос не выполнен: ", err);
+  //   })
+  //   .finally(() => {
+  //     closeModal(popupToClose);
+  //   });
+}
 
 // функция добавления новой карты
 
@@ -114,18 +170,26 @@ function addNewCard(evt) {
   evt.preventDefault();
   const popupToClose = document.querySelector(".popup_is-opened");
 
-  const cardNew = {
+  const newCard = {
     name: placeNameInput.value,
     link: linkInput.value,
   };
 
-  container.prepend(
-    createCard(cardNew, handleDeleteCard, handleLikeCard, handleImageClick)
-  );
+  postNewCard(newCard)
+    .then((card) => {
+      container.prepend(
+        createCard(card, handleDeleteCard, handleLikeCard, handleImageClick)
+      );
 
-  evt.target.reset();
-
-  closeModal(popupToClose);
+      evt.target.reset();
+      clearValidation(addElement);
+    })
+    .catch((err) => {
+      console.log("Ошибка. Запрос не выполнен: ", err);
+    })
+    .finally(() => {
+      closeModal(popupToClose);
+    });
 }
 
 addElement.addEventListener("submit", addNewCard);
@@ -136,8 +200,4 @@ modalCloseButtonCollection.forEach((closeButton) => {
   closeButton.addEventListener("click", handleCloseButton);
 });
 
-clearValidation(formElement)
-clearValidation(addElement)
-
 enableValidation();
-conclusionCard(initialCards);

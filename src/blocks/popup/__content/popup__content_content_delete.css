@@ -1,0 +1,18 @@
+.popup__content_content_delete{
+    max-width: 430px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+    box-sizing: border-box;
+    padding: 34px 36px;
+  }
+  
+  @media screen and (max-width: 568px) {
+    .popup__content_content_delete{
+      width: 100%;
+      max-width: calc(100% - 80px);
+      margin-top: 40px;
+      padding: 30px 20px;
+    }
+  }
