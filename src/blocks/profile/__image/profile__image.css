@@ -46,4 +46,9 @@
   .profile__image {
     margin-right: 0;
   }
+  .profile__image-button {
+    top: 40px;
+  left: auto;
+  right: auto;
+  }
 }
