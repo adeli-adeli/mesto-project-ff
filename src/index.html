@@ -21,8 +21,9 @@
       </header>
       <main class="content">
         <section class="profile page__section">
-          <div class="">
-            <img class="profile__image" src=""></img>
+          <div class="profile__image_edit">
+            <div class="profile__image"></div>
+            <button class="profile__image-button" type="button"></button>
           </div>
           <div class="profile__info">
             <h1 class="profile__title"></h1>
@@ -141,13 +142,13 @@
         </div>
       </div>
 
-<!-- форма редоктирования аватара -->
+      <!-- форма редоктирования аватара -->
 
       <div class="popup popup_type_new-avatar popup_is-animated">
-        <div class="popup__content">
+        <div class="popup__content_new_avatar">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Обновить аватар</h3>
-          <form class="popup__form" name="edit-avatar" novalidate>
+          <form class="popup__form" name="new-avatar" novalidate>
             <input
               id="link__avatar"
               type="url"

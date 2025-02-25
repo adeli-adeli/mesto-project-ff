@@ -20,15 +20,6 @@ export function createCard(element, deleteCard, likeCard, imageClick, userId) {
   imageCard.alt = element.name;
   titleCard.textContent = element.name;
 
-  // проверка пользователя, если это твоя карточка то показываем кнопку удаления, если нет то скрываем
-  if (element.owner._id === userId) {
-    deleteButton.addEventListener("click", () => {
-      deleteCard(cardElement, cardId);
-    });
-  } else {
-    deleteButton.style.display = "none";
-  }
-
   const isLiked = element.likes.some((user) => {
     return user._id === userId;
   });
@@ -37,6 +28,15 @@ export function createCard(element, deleteCard, likeCard, imageClick, userId) {
     likeButton.classList.add("card__like-button_is-active");
   } else {
     likeButton.classList.remove("card__like-button_is-active");
+  }
+
+  // проверка пользователя, если это твоя карточка то показываем кнопку удаления, если нет то скрываем
+  if (element.owner._id === userId) {
+    deleteButton.addEventListener("click", () => {
+      deleteCard(cardElement, cardId);
+    });
+  } else {
+    deleteButton.remove();
   }
 
   likeButton.addEventListener("click", (evt) => {
@@ -64,14 +64,14 @@ export function handleDeleteCard(card, cardId) {
         closeModal(popupTypeDeleteCard);
       })
       .catch((err) => {
-        console.log("Ошибка. Запрос не выполнен: ", err);
+        console.log(err);
       });
   });
 }
 
 // Функция кнопки лайка
 
-export function handleLikeCard(evt, cardId,  likesCount) {
+export function handleLikeCard(evt, cardId, likesCount) {
   //проверка если пользователь еще не поставил лайк - то ставим, если его лайк уже стоит удаляем
 
   const isLiked = evt.target.classList.contains("card__like-button_is-active");
@@ -82,7 +82,7 @@ export function handleLikeCard(evt, cardId,  likesCount) {
         likesCount.textContent = card.likes.length;
       })
       .catch((err) => {
-        console.log("Ошибка. Запрос не выполнен: ", err);
+        console.log(err);
       });
   } else {
     deleteLikesCard(cardId)
@@ -92,7 +92,7 @@ export function handleLikeCard(evt, cardId,  likesCount) {
         likesCount.textContent = card.likes.length;
       })
       .catch((err) => {
-        console.log("Ошибка. Запрос не выполнен: ", err);
+        console.log(err);
       });
   }
 }

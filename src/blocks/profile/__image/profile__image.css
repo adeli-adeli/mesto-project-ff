@@ -7,13 +7,34 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  position: relative;
 }
 
-.profile__image_edit:hover {
-  background: transparent url('../../../images/edit-icon.svg') center no-repeat;
-  opacity: 0.6;
+.profile__image-button {
+  border: none;
+  background: transparent url("../../../images/edit-icon.svg") center
+    no-repeat;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-size: 26px;
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  top: 33px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.profile__image_edit:hover .profile__image-button {
+  display: block;
 }
 
+.profile__image_edit:hover .profile__image {
+  opacity: 0.8;
+}
 
 @media screen and (max-width: 740px) {
   .profile__image {

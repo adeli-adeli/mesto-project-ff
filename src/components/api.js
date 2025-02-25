@@ -12,7 +12,7 @@ const handleResponse = (response) => {
   if (response.ok) {
     return response.json();
   }
-  return Promise.reject(`${response.status}`);
+  return Promise.reject(`Ошибка: ${response.status}`);
 };
 
 //информация о пользователе
@@ -53,11 +53,11 @@ export function patchEditProfile(edit) {
 
 //редоктирования аватара
 
-export function patchEditProfileAvatar(avatar) {
+export function patchEditProfileAvatar(data) {
   return fetch(`${server.baseUrl}/users/me/avatar`, {
     method: "PATCH",
     headers: server.headers,
-    body: JSON.stringify(avatar),
+    body: JSON.stringify(data),
   }).then(handleResponse);
 }
 

@@ -1,3 +1,3 @@
 # Проектная работа Mesto
 
-https://github.com/adeli-adeli/mesto-project-ff.git
+https://adeli-adeli.github.io/mesto-project
