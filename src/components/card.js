@@ -1,7 +1,6 @@
 // @todo: Функция создания карточки
 import { cardTemplate } from "..";
-import { deleteCardInfo, deleteLikesCard, putLikesCard } from "./api.js";
-import { closeModal, openModal } from "./modal.js";
+import { deleteLikesCard, putLikesCard } from "./api.js";
 
 export function createCard(element, deleteCard, likeCard, imageClick, userId) {
   const cardElement = cardTemplate.cloneNode(true).querySelector(".card");
@@ -47,26 +46,6 @@ export function createCard(element, deleteCard, likeCard, imageClick, userId) {
   likesCount.textContent = element.likes.length;
 
   return cardElement;
-}
-
-// @todo: Функция удаления карточки
-
-export function handleDeleteCard(card, cardId) {
-  const popupTypeDeleteCard = document.querySelector(".popup_type_delete-card");
-  const deletionConfirmation = document.querySelector(".deletion_confirmation");
-
-  openModal(popupTypeDeleteCard);
-
-  deletionConfirmation.addEventListener("click", () => {
-    deleteCardInfo(cardId)
-      .then(() => {
-        card.remove();
-        closeModal(popupTypeDeleteCard);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
 }
 
 // Функция кнопки лайка

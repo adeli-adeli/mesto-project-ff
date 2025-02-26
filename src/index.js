@@ -1,17 +1,14 @@
 import "./pages/index.css";
-import {
-  createCard,
-  handleDeleteCard,
-  handleLikeCard,
-} from "./components/card.js";
+import { createCard, handleLikeCard } from "./components/card.js";
 import { closeModal, openModal } from "./components/modal.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
   getUserInfo,
-  getInitialCard,
+  getInitialCards,
   postNewCard,
   patchEditProfile,
   patchEditProfileAvatar,
+  deleteCardInfo,
 } from "./components/api.js";
 
 // @todo: Темплейт карточки
@@ -22,7 +19,7 @@ export const cardTemplate = document.querySelector("#card-template").content;
 
 const container = document.querySelector(".places__list");
 
-export const popupAll = document.querySelectorAll(".popup");
+export const allPopups = document.querySelectorAll(".popup");
 
 const modalCloseButtonCollection = document.querySelectorAll(".popup__close");
 
@@ -39,7 +36,6 @@ const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeNewAvatar = document.querySelector(".popup_type_new-avatar");
 const popupImageButton = document.querySelector(".profile__image-button");
 
-
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileImage = document.querySelector(".profile__image");
@@ -55,14 +51,26 @@ const linkInput = addElement.elements.link;
 const newAvatar = document.forms["new-avatar"];
 const avatarInput = newAvatar.elements.link;
 
+const popupTypeDeleteCard = document.querySelector(".popup_type_delete-card");
+const deletionConfirmation = document.querySelector(".deletion_confirmation");
+
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "form__submit_inactive",
+  inputErrorClass: "form__input_type_error",
+  errorClass: "form__input-error_active",
+};
+
 // @todo: Вывести карточки на страницу
 
-Promise.all([getUserInfo(), getInitialCard()]).then(([user, card]) => {
-  card.forEach((card) => {
+Promise.all([getUserInfo(), getInitialCards()]).then(([user, card]) => {
+  card.forEach((cards) => {
     container.append(
       createCard(
-        card,
-        handleDeleteCard,
+        cards,
+        handleCardDeleteButton,
         handleLikeCard,
         handleImageClick,
         user._id
@@ -74,10 +82,6 @@ Promise.all([getUserInfo(), getInitialCard()]).then(([user, card]) => {
   profileDescription.textContent = user.about;
   profileImage.setAttribute(`style`, `background-image: url(${user.avatar})`);
 });
-
-
-
-
 
 // открытие popup с картинкой
 
@@ -142,14 +146,14 @@ function handleFormProfileEditing(evt) {
     .then((edit) => {
       profileTitle.textContent = edit.name;
       profileDescription.textContent = edit.about;
+      evt.target.reset();
+      clearValidation(formElement, validationConfig);
+      closeModal(popupToClose);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      evt.target.reset();
-      clearValidation(formElement);
-      closeModal(popupToClose);
       button.textContent = "Сохранить";
     });
 }
@@ -174,14 +178,14 @@ function handleFormProfileEditingAvatar(evt) {
         "style",
         `background-image: url(${data.avatar})`
       );
+      evt.target.reset();
+      clearValidation(newAvatar, validationConfig);
+      closeModal(popupToClose);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      evt.target.reset();
-      clearValidation(newAvatar);
-      closeModal(popupToClose);
       button.textContent = "Сохранить";
     });
 }
@@ -205,21 +209,53 @@ function addNewCard(evt) {
   postNewCard(newCard)
     .then((card) => {
       container.prepend(
-        createCard(card, handleDeleteCard, handleLikeCard, handleImageClick)
+        createCard(
+          card,
+          handleCardDeleteButton,
+          handleLikeCard,
+          handleImageClick,
+          card.owner._id
+        )
       );
+      evt.target.reset();
+      clearValidation(addElement, validationConfig);
+      closeModal(popupToClose);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      evt.target.reset();
-      clearValidation(addElement);
-      closeModal(popupToClose);
       button.textContent = "Сохранить";
     });
 }
 
 addElement.addEventListener("submit", addNewCard);
+
+let cardToDelete = null;
+let cardIdToDelete = null;
+
+function handleCardDeleteButton(card, cardId) {
+  cardToDelete = card;
+  cardIdToDelete = cardId;
+
+  openModal(popupTypeDeleteCard);
+}
+
+//подверждение удаления карточки
+function handleCardDeleteSubmit() {
+  const popupToClose = document.querySelector(".popup_is-opened");
+
+  deleteCardInfo(cardIdToDelete)
+    .then(() => {
+      cardToDelete.remove();
+      closeModal(popupToClose);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+deletionConfirmation.addEventListener("click", handleCardDeleteSubmit);
 
 // находим колекцию циклом, и вешаем слушатель на каждую
 
@@ -227,4 +263,4 @@ modalCloseButtonCollection.forEach((closeButton) => {
   closeButton.addEventListener("click", handleCloseButton);
 });
 
-enableValidation();
+enableValidation(validationConfig);

@@ -25,7 +25,7 @@ export function getUserInfo() {
 
 //информация о карточках
 
-export function getInitialCard() {
+export function getInitialCards() {
   return fetch(`${server.baseUrl}/cards`, {
     headers: server.headers,
   }).then(handleResponse);
